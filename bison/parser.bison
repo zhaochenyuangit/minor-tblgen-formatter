@@ -35,23 +35,28 @@ scopes  : scope {$$ = $1;}
 scope   : class {$$ = create_scope($1,0,0);}
         | record {$$ = create_scope(0,$1,0);}
         ;
-class   : TOKEN_CLASS TOKEN_ID inherit body
+class   : TOKEN_CLASS id inherit body
             {$$ = create_class($2,$3,$4);}
         ;
-body    : TOKEN_LBRACKET stmts TOKEN_RBRACKET
-        | TOKEN_SEMI
+body    : TOKEN_LBRACKET stmts TOKEN_RBRACKET {$$ = create_body(false,$2);}
+        | TOKEN_SEMI {$$ = create_body(true,0);}
         ;
-stmts   : stmt stmts
-        | stmt
+stmts   : stmt stmts {set_next_stmt($1, $2);}
+        | stmt {$$ = $1;}
         ;
-stmt    : type TOKEN_ID TOKEN_EQ TOKEN_NUMBER TOKEN_SEMI;
+stmt    : type id TOKEN_EQ num TOKEN_SEMI
+            {$$ = create_stmt($2,$4,0);}
+        ;
 type    : TOKEN_INT;
 record  : TOKEN_DEF id inherit TOKEN_SEMI
             {$$ = create_def($2,$3);}
         ;
 id      : TOKEN_ID {char *str = malloc(10);
                     strcpy(str,yytext);
-                    $$ = str;}; 
+                    $$ = str;}
+        ; 
+num     : TOKEN_NUMBER {int num = atoi(yytext);$$ = (void*)num;}
+        ;
 inherit : TOKEN_COLON parents {$$ = create_inherit(false,$2);}
         | {$$ = create_inherit(true,0);}
         ;

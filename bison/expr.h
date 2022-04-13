@@ -50,9 +50,12 @@ class_t* create_class(char *id_, inherit_t *inherit_, body_t *body_);
 def_t* create_def(char *id_,inherit_t *inherit_);
 inherit_t* create_inherit(_Bool empty_, parent_t *parent_);
 parent_t* create_parent(char *id_,parent_t *next_);
+stmt_t* create_stmt(char *id_, int num_, stmt_t *next_);
+body_t* create_body(_Bool empty,stmt_t *stmt_);
 
 void set_next_parent(parent_t *p,parent_t *next_);
 void set_next_scope(scope_t *s, scope_t *next_);
+void set_next_stmt(stmt_t *t, stmt_t *next_);
 
 void print_def(def_t *d);
 void print_scope(scope_t *s);
