@@ -1,7 +1,8 @@
 %{
  #include <stdio.h>
  #include <string.h>
- #include "expr.h"
+ #include "tblgen-parser.h"
+ #include "print-tblgen.h"
  #define YYSTYPE void *
  int yylex(void);
  extern char *yytext;
@@ -48,8 +49,8 @@ stmt    : type id TOKEN_EQ num TOKEN_SEMI
             {$$ = create_stmt($2,$4,0);}
         ;
 type    : TOKEN_INT;
-record  : TOKEN_DEF id inherit TOKEN_SEMI
-            {$$ = create_def($2,$3);}
+record  : TOKEN_DEF id inherit body
+            {$$ = create_def($2,$3,$4);}
         ;
 id      : TOKEN_ID {char *str = malloc(10);
                     strcpy(str,yytext);

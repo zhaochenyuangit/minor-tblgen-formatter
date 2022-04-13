@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "expr.h"
+#include "tblgen-parser.h"
 #define YYSTYPE void *
 
 extern FILE *yyin;
