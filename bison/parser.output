@@ -14,7 +14,7 @@ Grammar
     1 program: scopes
 
     2 scopes: scope
-    3       | scopes scope
+    3       | scope scopes
 
     4 scope: class
     5      | record
@@ -38,7 +38,7 @@ Grammar
    15 inherit: TOKEN_COLON parents
    16        | %empty
 
-   17 parents: parents TOKEN_COMMA parent
+   17 parents: parent TOKEN_COMMA parents
    18        | parent
 
    19 parent: TOKEN_ID
@@ -138,23 +138,24 @@ State 3
 State 4
 
     1 program: scopes .
-    3 scopes: scopes . scope
-
-    TOKEN_DEF    shift, and go to state 1
-    TOKEN_CLASS  shift, and go to state 2
 
     $default  reduce using rule 1 (program)
-
-    scope   go to state 12
-    class   go to state 6
-    record  go to state 7
 
 
 State 5
 
     2 scopes: scope .
+    3       | scope . scopes
+
+    TOKEN_DEF    shift, and go to state 1
+    TOKEN_CLASS  shift, and go to state 2
 
     $default  reduce using rule 2 (scopes)
+
+    scopes  go to state 12
+    scope   go to state 5
+    class   go to state 6
+    record  go to state 7
 
 
 State 6
@@ -209,7 +210,7 @@ State 11
 
 State 12
 
-    3 scopes: scopes scope .
+    3 scopes: scope scopes .
 
     $default  reduce using rule 3 (scopes)
 
@@ -251,16 +252,16 @@ State 16
 State 17
 
    15 inherit: TOKEN_COLON parents .
-   17 parents: parents . TOKEN_COMMA parent
-
-    TOKEN_COMMA  shift, and go to state 23
 
     $default  reduce using rule 15 (inherit)
 
 
 State 18
 
-   18 parents: parent .
+   17 parents: parent . TOKEN_COMMA parents
+   18        | parent .
+
+    TOKEN_COMMA  shift, and go to state 23
 
     $default  reduce using rule 18 (parents)
 
@@ -299,11 +300,12 @@ State 22
 
 State 23
 
-   17 parents: parents TOKEN_COMMA . parent
+   17 parents: parent TOKEN_COMMA . parents
 
     TOKEN_ID  shift, and go to state 16
 
-    parent  go to state 28
+    parents  go to state 28
+    parent   go to state 18
 
 
 State 24
@@ -341,7 +343,7 @@ State 27
 
 State 28
 
-   17 parents: parents TOKEN_COMMA parent .
+   17 parents: parent TOKEN_COMMA parents .
 
     $default  reduce using rule 17 (parents)
 

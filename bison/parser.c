@@ -386,7 +386,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  11
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   22
+#define YYLAST   23
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  19
@@ -487,8 +487,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -4,     0,     1,     6,    -4,   -10,   -10,   -10,   -10,    -7,
-      -7,   -10,   -10,     7,     2,    -9,   -10,    -1,   -10,   -10,
+      -4,     0,     1,     6,   -10,    -4,   -10,   -10,   -10,    -7,
+      -7,   -10,   -10,     7,     2,    -9,   -10,   -10,    -1,   -10,
      -10,     5,   -10,     7,   -10,    -8,   -10,    10,   -10,   -10,
      -10,     3,    11,     8,   -10
 };
@@ -507,8 +507,8 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -10,   -10,   -10,    13,   -10,   -10,   -10,    -6,   -10,   -10,
-     -10,    12,   -10,    -3
+     -10,   -10,    12,   -10,   -10,   -10,   -10,    -6,   -10,   -10,
+     -10,    13,    -3,   -10
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -525,14 +525,14 @@ static const yytype_uint8 yytable[] =
 {
       24,    20,     1,     2,     8,    10,    11,    21,    13,    29,
       23,    16,    19,    24,    31,    32,    33,    12,    34,    30,
-      28,     0,    15
+      28,     0,     0,    15
 };
 
 static const yytype_int8 yycheck[] =
 {
        8,    10,     6,     7,     4,     4,     0,    16,    15,    17,
-      11,     4,    10,     8,     4,    12,     5,     4,    10,    25,
-      23,    -1,    10
+      11,     4,    10,     8,     4,    12,     5,     5,    10,    25,
+      23,    -1,    -1,    10
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -540,8 +540,8 @@ static const yytype_int8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     6,     7,    20,    21,    22,    23,    28,     4,    29,
-       4,     0,    22,    15,    30,    30,     4,    31,    32,    10,
-      10,    16,    24,    11,     8,    25,    26,    27,    32,    17,
+       4,     0,    21,    15,    30,    30,     4,    31,    32,    10,
+      10,    16,    24,    11,     8,    25,    26,    27,    31,    17,
       26,     4,    12,     5,    10
 };
 
@@ -1248,7 +1248,7 @@ yyreduce:
 
   case 4:
 #line 33 "parser.bison" /* yacc.c:1646  */
-    {set_next_scope((yyvsp[-1]),(yyvsp[0]));}
+    {(yyval) = (yyvsp[-1]);set_next_scope((yyvsp[-1]),(yyvsp[0]));}
 #line 1253 "parser.c" /* yacc.c:1646  */
     break;
 

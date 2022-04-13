@@ -2,7 +2,9 @@
 #include "expr.h"
 
 scope_t* create_scope(class_t* class_, def_t *def_, scope_t *next_){
+    static int i =0;
     scope_t *scope = malloc(sizeof(scope_t));
+    scope->index = i++;
     scope->cls = class_;
     scope->def = def_;
     scope->next = next_;
@@ -18,9 +20,12 @@ class_t* create_class(char *id_, inherit_t *inherit_, body_t *body_){
 }
 
 def_t* create_def(char *id_,inherit_t *inherit_){
+    static int i =0;
     def_t *def = malloc(sizeof(def_t));
+    def->index = i++;
     def->id = id_;
     def->inherit = inherit_;
+    //printf("def %d : %s\n",def->index,def->id);
     return def;
 }
 
@@ -39,11 +44,18 @@ parent_t* create_parent(char *id_,parent_t *next_){
     return parent;
 }
 
+body_t* create_body(_Bool empty,stmt_t *stmt_){
+    body_t *body = malloc(sizeof(body_t));
+    body->empty = empty;
+    body->stmt = stmt_;
+    return body;
+}
+
 void set_next_parent(parent_t *p, parent_t *next_){
     p->next = next_;
 }
 void set_next_scope(scope_t *s, scope_t *next_){
-    printf("scope %s next %x\n", s->def->id,next_);
+    //printf("%d scope %s next %x %d\n", s->index,s->def->id,next_,next_->index);
     s->next = next_;
 }
 
@@ -71,7 +83,9 @@ void print_def(def_t *d){
 }
 void print_scope(scope_t *s){
     if(!s) puts("empty");
-    print_def(s->def);
+    if(s->def){
+        print_def(s->def);
+    }
     printf("\n");
     if (s->next)
         print_scope(s->next);

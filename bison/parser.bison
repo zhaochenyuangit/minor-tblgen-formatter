@@ -30,18 +30,18 @@
 %%
 program : scopes {print_scope($1);};
 scopes  : scope {$$ = $1;}
-        | scopes scope {set_next_scope($1,$2);}
+        | scope scopes {$$ = $1;set_next_scope($1,$2);}
         ;
 scope   : class {$$ = create_scope($1,0,0);}
         | record {$$ = create_scope(0,$1,0);}
         ;
-class   : TOKEN_CLASS TOKEN_ID inherit classbody
+class   : TOKEN_CLASS TOKEN_ID inherit body
             {$$ = create_class($2,$3,$4);}
         ;
-classbody   : TOKEN_LBRACKET stmts TOKEN_RBRACKET
-            | TOKEN_SEMI
-            ;
-stmts   : stmts stmt
+body    : TOKEN_LBRACKET stmts TOKEN_RBRACKET
+        | TOKEN_SEMI
+        ;
+stmts   : stmt stmts
         | stmt
         ;
 stmt    : type TOKEN_ID TOKEN_EQ TOKEN_NUMBER TOKEN_SEMI;
@@ -55,7 +55,7 @@ id      : TOKEN_ID {char *str = malloc(10);
 inherit : TOKEN_COLON parents {$$ = create_inherit(false,$2);}
         | {$$ = create_inherit(true,0);}
         ;
-parents : parents TOKEN_COMMA parent {set_next_parent($1,$3);$$=$1;}
+parents : parent TOKEN_COMMA parents {set_next_parent($1,$3);$$=$1;}
         | parent {$$ = $1;}
         ; 
 parent  : TOKEN_ID { char *str = malloc(10);

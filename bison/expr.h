@@ -12,6 +12,7 @@ typedef struct stmt_t{
 }stmt_t;
 
 typedef struct body_t{
+    _Bool empty;
     struct stmt_t *stmt;
 }body_t;
 
@@ -21,6 +22,7 @@ typedef struct inherit_t{
 }inherit_t;
 
 typedef struct def_t{
+    int index;
     char *id;
     struct inherit_t *inherit;
 }def_t;
@@ -37,6 +39,7 @@ typedef struct class_t{
 }class_t;
 
 typedef struct scope_t{
+    int index;
     struct class_t *cls;
     struct def_t *def;
     struct scope_t *next;
