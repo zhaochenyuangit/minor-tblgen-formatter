@@ -60,7 +60,9 @@ extern int yydebug;
     TOKEN_COLON = 270,
     TOKEN_LBRACKET = 271,
     TOKEN_RBRACKET = 272,
-    TOKEN_ERROR = 273
+    TOKEN_LANGLE = 273,
+    TOKEN_RANGLE = 274,
+    TOKEN_ERROR = 275
   };
 #endif
 

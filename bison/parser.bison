@@ -2,7 +2,7 @@
  #include <stdio.h>
  #include <string.h>
  #include "tblgen-parser.h"
- #include "print-tblgen.h"
+ #include "printer.h"
  #define YYSTYPE void *
  int yylex(void);
  extern char *yytext;
@@ -26,6 +26,8 @@
 %token TOKEN_COLON
 %token TOKEN_LBRACKET
 %token TOKEN_RBRACKET
+%token TOKEN_LANGLE
+%token TOKEN_RANGLE
 %token TOKEN_ERROR
 
 %%
@@ -36,37 +38,68 @@ scopes  : scope {$$ = $1;}
 scope   : class {$$ = create_scope($1,0,0);}
         | record {$$ = create_scope(0,$1,0);}
         ;
-class   : TOKEN_CLASS id inherit body
-            {$$ = create_class($2,$3,$4);}
+class   : TOKEN_CLASS id template inherit body
+        
         ;
-body    : TOKEN_LBRACKET stmts TOKEN_RBRACKET {$$ = create_body(false,$2);}
-        | TOKEN_SEMI {$$ = create_body(true,0);}
+body    : TOKEN_LBRACKET stmts TOKEN_RBRACKET {$$ = $2;}
+        | TOKEN_SEMI {$$ = 0;}
         ;
-stmts   : stmt stmts {set_next_stmt($1, $2);}
+stmts   : stmt stmts {set_next_stmt($1, $2);$$=$1;}
         | stmt {$$ = $1;}
         ;
-stmt    : type id TOKEN_EQ num TOKEN_SEMI
-            {$$ = create_stmt($2,$4,0);}
+stmt    : type id assign TOKEN_SEMI
+            {$$ = create_stmt($1,$2,$3,0);}
         ;
-type    : TOKEN_INT;
-record  : TOKEN_DEF id inherit body
-            {$$ = create_def($2,$3,$4);}
+args    : arg TOKEN_COMMA args {set_next_arg($1,$3);$$=$1;};
+        | arg {$$=$1;}
         ;
-id      : TOKEN_ID {char *str = malloc(10);
+arg   : rvalue {$$=$1;};
+params  : param TOKEN_COMMA params
+        | param
+        ;
+param     : type id assign;
+
+assign  : TOKEN_EQ rvalue {$$=$2;}
+        | {$$=0;}
+        ;
+rvalue  : num {$$ = create_rvalue((long)$1,0,0);}
+        | string {$$ = create_rvalue(0,$1,0);}
+        | id {$$ = create_rvalue(0,0,$1);}
+        ;
+type    : TOKEN_INT {char *str = malloc(strlen(yytext));
+                        strcpy(str,yytext);
+                        $$ = str;};
+        | TOKEN_STRING {char *str = malloc(10);
                     strcpy(str,yytext);
                     $$ = str;}
-        ; 
-num     : TOKEN_NUMBER {int num = atoi(yytext);$$ = (void*)num;}
         ;
-inherit : TOKEN_COLON parents {$$ = create_inherit(false,$2);}
-        | {$$ = create_inherit(true,0);}
+record  : TOKEN_DEF defname inherit body
+            {$$ = create_def($2,$3,$4);}
+        ;
+defname : id {$$=$1;}
+        | {$$=0;}
+        ;
+id      : TOKEN_ID {char *str = malloc(strlen(yytext));
+                        strcpy(str,yytext);
+                        $$ = str;};
+        ; 
+template: TOKEN_LANGLE params TOKEN_RANGLE
+        |
+        ;
+instance: TOKEN_LANGLE args TOKEN_RANGLE {$$=$2;}
+        | {$$=0;}
+        ;
+string  : TOKEN_DQUOTE {char *str = malloc(strlen(yytext));
+                        strcpy(str,yytext);
+                        $$ = str;};
+num     : TOKEN_NUMBER {long num = atoi(yytext);$$ = (void*)num;};
+inherit : TOKEN_COLON parents {$$ = $2;}
+        | {$$ = 0;}
         ;
 parents : parent TOKEN_COMMA parents {set_next_parent($1,$3);$$=$1;}
         | parent {$$ = $1;}
         ; 
-parent  : TOKEN_ID { char *str = malloc(10);
-                    strcpy(str,yytext);
-                    $$ = create_parent(str,0);};
+parent  : id instance {$$ = create_parent($1,$2,0);};
 
 %%
 int yywarp(){return 0;}
