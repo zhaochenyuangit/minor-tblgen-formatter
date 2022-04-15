@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include "tblgen-parser.h"
+#include "printer.h"
 
 scope_t* create_scope(class_t* class_, def_t *def_, scope_t *next_){
-    static int i =0;
+    __DEBUG(static int i =0;)
     scope_t *scope = malloc(sizeof(scope_t));
-    scope->index = i++;
+    __DEBUG(scope->index = i++;)
     scope->cls = class_;
     scope->def = def_;
     scope->next = next_;
@@ -21,9 +22,9 @@ class_t* create_class(char *id_, template_t *template_, inherit_t *inherit_, bod
 }
 
 def_t* create_def(char *id_, inherit_t *inherit_, body_t *body_){
-    static int i =0;
+    __DEBUG(static int i =0;)
     def_t *def = malloc(sizeof(def_t));
-    def->index = i++;
+    __DEBUG(def->index = i++;)
     def->id = id_;
     def->inherit = inherit_;
     def->body = body_;
@@ -66,14 +67,17 @@ rvalue_t* create_rvalue(long num_, char *string_,char *id_){
     if(id_){
         rvalue->id = id_;
         rvalue->vtype = ID;
+        __DEBUG(puts("created id");)
     }
     if(num_){
         rvalue->num = num_;
         rvalue->vtype = NUM;
+        __DEBUG(puts("created num");)
     }
     if(string_){
         rvalue->string = string_;
         rvalue->vtype = STRING;
+        __DEBUG(puts("created string");)
     }
 }
 
@@ -93,7 +97,7 @@ void set_next_parent(parent_t *p, parent_t *next_){
     p->next = next_;
 }
 void set_next_scope(scope_t *s, scope_t *next_){
-    //printf("%d scope %s next %x %d\n", s->index,s->def->id,next_,next_->index);
+    //__DEBUG(printf("%d scope %s next %x %d\n", s->index,s->def->id,next_,next_->index);)
     s->next = next_;
 }
 

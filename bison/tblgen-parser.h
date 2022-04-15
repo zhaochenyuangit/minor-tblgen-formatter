@@ -2,6 +2,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+//#define DEBUG_MODE 
+#ifdef DEBUG_MODE
+#define __DEBUG(code) code 
+#else
+#define __DEBUG(code)
+#endif //DEBUG_MODE
+
 #ifndef __EXPR_H__
 #define __EXPR_H__
 enum {
