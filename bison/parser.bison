@@ -78,25 +78,34 @@ rvalue  : num   {$$ = create_rvalue((long)$1,0,0);}
         | string{$$ = create_rvalue(0,$1,0);}
         | id    {$$ = create_rvalue(0,0,$1);}
         ;
-type    : TOKEN_INT {char *str = malloc(strlen(yytext));
-                        strcpy(str,yytext);
-                        $$ = str;};
-        | TOKEN_STRING {char *str = malloc(10);
-                    strcpy(str,yytext);
-                    $$ = str;}
+type    : TOKEN_INT {
+                char *str = malloc(strlen(yytext));
+                strcpy(str,yytext);
+                $$ = str;
+                }
+        | TOKEN_STRING {
+                char *str = malloc(strlen(yytext));
+                strcpy(str,yytext);
+                $$ = str;
+                }
         ;
 record  : TOKEN_DEF defname inherit body
             {$$ = create_def($2,$3,$4);}
         ;
 
-id      : TOKEN_ID {char *str = malloc(strlen(yytext));
-                        strcpy(str,yytext);
-                        $$ = str;};
-        ; 
+id      : TOKEN_ID{
+                char *str = malloc(strlen(yytext));
+                strcpy(str,yytext);
+                $$ = str;
+                }
+        ;
 
-string  : TOKEN_DQUOTE {char *str = malloc(strlen(yytext));
-                        strcpy(str,yytext);
-                        $$ = str;};
+string  : TOKEN_DQUOTE {
+                char *str = malloc(strlen(yytext));
+                strcpy(str,yytext);
+                $$ = str;
+                }
+        ;
 num     : TOKEN_NUMBER {long num = atoi(yytext);$$ = (void*)num;};
 parents : parent TOKEN_COMMA parents {set_next_parent($1,$3);$$=$1;}
         | parent {$$ = $1;}
